@@ -1,0 +1,25 @@
+# Zola config for alexsage.com
+# Zola version is pinned in .github/workflows/deploy.yml (ZOLA_VERSION).
+
+base_url = "https://alexsage.com"
+title = "Alex Sage"
+description = "Notes and writing by Alex Sage."
+default_language = "en"
+
+# Theme lives directly in templates/, sass/, static/. Sass gets turned on
+# when the stylesheet is built (theme stage 2).
+compile_sass = false
+build_search_index = false
+
+generate_feeds = true
+feed_filenames = ["atom.xml"]
+
+taxonomies = [
+    { name = "tags", feed = true },
+]
+
+[markdown]
+smart_punctuation = true
+external_links_no_follow = false
+
+[extra]
