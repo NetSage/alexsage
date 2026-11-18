@@ -1,15 +1,29 @@
 {% extends "base.html" %}
 
+{% block body_class %}home{% endblock %}
+
 {% block content %}
-<h1>{{ config.title }}</h1>
-{{ section.content | safe }}
+<section class="intro">
+  <h1>{{ config.title }}</h1>
+  {{ section.content | safe }}
+</section>
 
 {% set blog = get_section(path="blog/_index.md") %}
-<h2>Recent posts</h2>
-<ul>
-  {% for p in blog.pages[:10] %}
-  <li><time datetime="{{ p.date }}">{{ p.date }}</time> <a href="{{ p.permalink }}">{{ p.title }}</a></li>
-  {% endfor %}
-</ul>
-<p><a href="{{ blog.permalink }}">All posts</a></p>
+{% set notes = get_section(path="notes/_index.md") %}
+
+<section class="recent" aria-labelledby="recent-posts">
+  <h2 id="recent-posts">Recent posts</h2>
+  <ul class="entry-list">
+    {% for p in blog.pages[:5] %}{{<site.entry p={p} />}}{% else %}<li>No posts yet.</li>{% endfor %}
+  </ul>
+  <p class="more"><a href="{{ blog.permalink }}">All posts</a></p>
+</section>
+
+<section class="recent" aria-labelledby="recent-notes">
+  <h2 id="recent-notes">Recently tended notes</h2>
+  <ul class="entry-list">
+    {% for p in notes.pages[:5] %}{{<site.entry p={p} note={true} />}}{% else %}<li>No notes yet.</li>{% endfor %}
+  </ul>
+  <p class="more"><a href="{{ notes.permalink }}">All notes</a></p>
+</section>
 {% endblock %}

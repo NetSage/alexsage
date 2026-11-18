@@ -1,0 +1,431 @@
+// alexsage.com theme: "blend" — serif reading text, sci-fi interface.
+// Compiled by Zola (grass) to /style.css. System fonts only.
+
+// ---------- Tokens ----------
+
+$serif: "Palatino Linotype", "Book Antiqua", Palatino, "URW Palladio L", P052, Georgia, serif;
+$sans: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+$mono: ui-monospace, "SF Mono", Menlo, Consolas, "Liberation Mono", monospace;
+
+$measure: 42rem;      // reading column
+$aside: 15rem;        // marginalia column
+$wide: 64rem;         // breakpoint for the side column
+
+@mixin light {
+  color-scheme: light;
+  --bg: #f4ecda;      // parchment
+  --bg-alt: #ebe0c8;
+  --text: #2a2118;    // ink
+  --muted: #5f513d;
+  --border: #b8a477;
+  --link: #0b5f6a;    // deep teal
+  --gold: #7d5410;    // old gold, darkened for contrast
+  --label: #0b5f6a;
+}
+
+@mixin dark {
+  color-scheme: dark;
+  --bg: #121722;      // night
+  --bg-alt: #1a2131;
+  --text: #e3dccb;
+  --muted: #9aa5ba;
+  --border: #3a4762;
+  --link: #6cc3d0;    // cyan
+  --gold: #d9b45a;
+  --label: #6cc3d0;
+}
+
+// Default follows the OS. data-theme (set by the toggle) overrides it.
+:root { @include light; }
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) { @include dark; }
+}
+:root[data-theme="dark"] { @include dark; }
+:root[data-theme="light"] { @include light; }
+
+// ---------- Base ----------
+
+*, *::before, *::after { box-sizing: border-box; }
+
+html {
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+}
+
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--text);
+  font-family: $serif;
+  font-size: 1.125rem;
+  line-height: 1.65;
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+a {
+  color: var(--link);
+  text-decoration-thickness: 1px;
+  text-underline-offset: 0.18em;
+  &:hover { text-decoration-thickness: 2px; }
+}
+
+:focus-visible {
+  outline: 2px solid var(--link);
+  outline-offset: 2px;
+}
+
+img, video, svg { max-width: 100%; height: auto; }
+
+h1, h2, h3, h4 {
+  font-family: $serif;
+  font-weight: normal;
+  font-variant: small-caps;
+  letter-spacing: 0.03em;
+  line-height: 1.2;
+  margin: 2em 0 0.5em;
+}
+h1 { font-size: clamp(1.9rem, 1.4rem + 2vw, 2.6rem); margin-top: 0; }
+h2 { font-size: 1.6rem; }
+h3 { font-size: 1.3rem; }
+h4 { font-size: 1.1rem; }
+
+p, ul, ol, blockquote, pre, table, figure { margin: 0 0 1.1em; }
+
+hr {
+  border: 0;
+  border-top: 1px solid var(--border);
+  margin: 2.5em 0;
+}
+
+blockquote {
+  margin-left: 0;
+  padding-left: 1.1em;
+  border-left: 2px solid var(--gold);
+  color: var(--muted);
+  font-style: italic;
+}
+
+code, kbd, samp, pre { font-family: $mono; font-size: 0.85em; }
+:not(pre) > code {
+  background: var(--bg-alt);
+  padding: 0.1em 0.35em;
+  border-radius: 3px;
+}
+pre {
+  background: var(--bg-alt);
+  border: 1px solid var(--border);
+  padding: 0.9em 1em;
+  overflow-x: auto;
+  line-height: 1.5;
+  code { font-size: 1em; background: none; padding: 0; }
+}
+
+table {
+  border-collapse: collapse;
+  width: 100%;
+  display: block;
+  overflow-x: auto;
+  font-size: 0.95em;
+}
+th, td {
+  border-bottom: 1px solid var(--border);
+  padding: 0.4em 0.75em 0.4em 0;
+  text-align: left;
+  vertical-align: top;
+}
+th {
+  font-family: $sans;
+  font-size: 0.8em;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--muted);
+  font-weight: normal;
+}
+
+figure { margin-left: 0; margin-right: 0; }
+figcaption { font-family: $sans; font-size: 0.85rem; color: var(--muted); margin-top: 0.4em; }
+
+// ---------- Shared interface bits (sci-fi side) ----------
+
+%caps {
+  font-family: $sans;
+  text-transform: uppercase;
+  letter-spacing: 0.14em;
+  font-size: 0.78rem;
+}
+
+%meta {
+  font-family: $mono;
+  font-size: 0.8rem;
+  color: var(--muted);
+}
+
+.skip-link {
+  position: absolute;
+  left: 1rem;
+  top: -3rem;
+  padding: 0.5rem 0.75rem;
+  background: var(--bg-alt);
+  @extend %caps;
+  z-index: 10;
+  &:focus { top: 1rem; }
+}
+
+.status {
+  @extend %caps;
+  font-family: $mono;
+  font-size: 0.72rem;
+  letter-spacing: 0.08em;
+  color: var(--label);
+  border: 1px solid currentColor;
+  padding: 0 0.45em;
+  white-space: nowrap;
+}
+.status-evergreen { color: var(--gold); }
+
+// ---------- Layout ----------
+
+.site-header,
+.site-main,
+.site-footer {
+  width: 100%;
+  max-width: calc(#{$measure} + 3rem);
+  margin: 0 auto;
+  padding: 0 1.5rem;
+}
+
+.post .site-main,
+.note .site-main {
+  max-width: calc(#{$measure} + #{$aside} + 6rem);
+}
+
+.site-header {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 0.5rem 1.5rem;
+  padding-top: 1.5rem;
+  padding-bottom: 0.75rem;
+  margin-bottom: 2.5rem;
+  border-bottom: 1px solid var(--border);
+}
+
+.post .site-header,
+.note .site-header {
+  max-width: calc(#{$measure} + #{$aside} + 6rem);
+}
+
+.site-title {
+  @extend %caps;
+  font-size: 0.95rem;
+  letter-spacing: 0.22em;
+  color: var(--gold);
+  text-decoration: none;
+}
+
+.site-nav {
+  display: flex;
+  align-items: baseline;
+  gap: 1.25rem;
+  ul {
+    display: flex;
+    gap: 1.25rem;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+  a {
+    @extend %caps;
+    color: var(--text);
+    text-decoration: none;
+    &:hover, &[aria-current="page"] {
+      color: var(--link);
+      text-decoration: underline;
+      text-underline-offset: 0.4em;
+    }
+  }
+}
+
+.theme-toggle {
+  @extend %caps;
+  background: none;
+  border: 1px solid var(--border);
+  color: var(--text);
+  padding: 0.1rem 0.5rem;
+  cursor: pointer;
+  &:hover { border-color: var(--link); color: var(--link); }
+}
+
+.site-main { flex: 1; }
+
+.site-footer {
+  @extend %meta;
+  margin-top: 4rem;
+  padding-top: 1rem;
+  padding-bottom: 2rem;
+  border-top: 1px solid var(--border);
+  p { margin: 0; }
+}
+
+// ---------- Listings ----------
+
+.intro { margin-bottom: 2.5rem; }
+
+.section-header { margin-bottom: 2rem; }
+
+.recent { margin-bottom: 2.5rem; }
+.recent h2 { margin-top: 0; }
+
+.entry-list {
+  list-style: none;
+  padding: 0;
+  border-top: 1px solid var(--border);
+}
+
+.entry {
+  padding: 0.75rem 0;
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 0.25rem 1rem;
+}
+.entry-title { font-size: 1.15rem; }
+.entry-meta {
+  @extend %meta;
+  display: inline-flex;
+  align-items: baseline;
+  gap: 0.6em;
+}
+.entry-desc {
+  flex-basis: 100%;
+  margin: 0.15rem 0 0;
+  color: var(--muted);
+  font-size: 0.98rem;
+}
+
+.more {
+  @extend %caps;
+  margin-top: 0.75rem;
+}
+
+.term-list {
+  list-style: none;
+  padding: 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.6rem 1.5rem;
+  .count { @extend %meta; }
+}
+
+// ---------- Articles ----------
+
+.article-header { margin-bottom: 1.75rem; }
+.article-meta {
+  @extend %meta;
+  margin: 0;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 0.35em 0.6em;
+}
+
+// Illuminated first letter: serif + gold.
+.prose > p:first-of-type::first-letter {
+  float: left;
+  font-size: 3.4em;
+  line-height: 0.85;
+  margin: 0.06em 0.1em 0 0;
+  color: var(--gold);
+  font-family: $serif;
+}
+
+.marginalia {
+  font-size: 0.95rem;
+  margin-bottom: 2rem;
+  padding: 0.75rem 0;
+  border-top: 1px solid var(--border);
+  border-bottom: 1px solid var(--border);
+  &:not(:has(*)) { display: none; }
+
+  h2 {
+    @extend %caps;
+    font-variant: normal;
+    color: var(--muted);
+    margin: 0 0 0.4rem;
+  }
+  nav, section, .tag-list { margin-bottom: 1rem; }
+  > :last-child { margin-bottom: 0; }
+
+  ol, ul { margin: 0; padding-left: 1.1em; }
+  ol ol { padding-left: 1em; font-size: 0.95em; }
+  li { margin: 0.15em 0; }
+}
+
+.tag-list,
+.marginalia .tag-list {
+  list-style: none;
+  padding: 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  li { margin: 0; }
+  a {
+    font-family: $mono;
+    font-size: 0.78rem;
+    text-decoration: none;
+    border: 1px solid var(--border);
+    padding: 0.05em 0.5em;
+    &::before { content: "#"; color: var(--muted); }
+    &:hover { border-color: var(--link); }
+  }
+}
+
+.pager {
+  @extend %caps;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-top: 3rem;
+  padding-top: 1rem;
+  border-top: 1px solid var(--border);
+  a[rel="next"] { margin-left: auto; text-align: right; }
+}
+
+@media (min-width: $wide) {
+  .article {
+    display: grid;
+    grid-template-columns: minmax(0, $measure) $aside;
+    grid-template-areas:
+      "header header"
+      "prose  aside"
+      "pager  pager";
+    column-gap: 3rem;
+    align-items: start;
+  }
+  .article-header { grid-area: header; }
+  .prose { grid-area: prose; }
+  .pager { grid-area: pager; }
+  .marginalia {
+    grid-area: aside;
+    position: sticky;
+    top: 1.5rem;
+    max-height: calc(100vh - 3rem);
+    overflow-y: auto;
+    border-bottom: 0;
+    padding-top: 0.6rem;
+  }
+}
+
+// ---------- Print ----------
+
+@media print {
+  :root, :root[data-theme] { @include light; --bg: #fff; --bg-alt: #fff; }
+  .site-nav, .skip-link, .theme-toggle, .marginalia .toc, .pager { display: none; }
+  a { color: inherit; }
+}

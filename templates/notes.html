@@ -1,0 +1,19 @@
+{% extends "base.html" %}
+
+{% block title %}{{ section.title }} · {{ config.title }}{% endblock %}
+
+{% block meta %}<meta name="description" content="{{ section.description or config.description }}">{% endblock %}
+
+{% block body_class %}section notes{% endblock %}
+
+{% block content %}
+<header class="section-header">
+  <h1>{{ section.title }}</h1>
+  {{ section.content | safe }}
+</header>
+
+{# Sorted by most recently tended (sort_by = "update_date" in notes/_index.md). #}
+<ul class="entry-list">
+  {% for p in section.pages %}{{<site.entry p={p} note={true} />}}{% else %}<li>No notes yet.</li>{% endfor %}
+</ul>
+{% endblock %}

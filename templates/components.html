@@ -1,0 +1,74 @@
+{# Shared components (Tera 2 / Zola 0.23). Zola discovers these automatically; no import needed. #}
+
+{% component site.date(value: string) -%}
+<time datetime="{{ value }}">{{ value | date(format="%B %-d, %Y") }}</time>
+{%- endcomponent site.date %}
+
+{% component site.status(status: string) -%}
+<span class="status status-{{ status | slugify }}">{{ status }}</span>
+{%- endcomponent site.status %}
+
+{# One item in a post/note listing. note=true shows status and "tended" date. #}
+{% component site.entry(p, note: bool = false) -%}
+<li class="entry">
+  <a class="entry-title" href="{{ p.permalink }}">{{ p.title }}</a>
+  <span class="entry-meta">
+    {%- if note -%}
+      {%- set status = p.extra | get(key="status", default="") -%}
+      {%- if status %} {{<site.status status={status} />}}{% endif %}
+      tended {{<site.date value={p.updated or p.date} />}}
+    {%- else -%}
+      {{<site.date value={p.date} />}}
+    {%- endif -%}
+  </span>
+  {%- if p.description %}
+  <p class="entry-desc">{{ p.description }}</p>
+  {%- endif %}
+</li>
+{%- endcomponent site.entry %}
+
+{% component site.tags(tags: array) -%}
+{%- if tags | length > 0 %}
+<ul class="tag-list">
+  {%- for t in tags %}
+  <li><a href="{{ get_taxonomy_url(kind="tags", term=t) }}">{{ t }}</a></li>
+  {%- endfor %}
+</ul>
+{%- endif %}
+{%- endcomponent site.tags %}
+
+{# Table of contents: top-level headings plus one nested level. Hidden if < 2 headings. #}
+{% component site.toc(toc: array) -%}
+{%- if toc | length > 1 %}
+<nav class="toc" aria-label="Contents">
+  <h2>Contents</h2>
+  <ol>
+    {%- for h in toc %}
+    <li><a href="{{ h.permalink }}">{{ h.title }}</a>
+      {%- if h.children | length > 0 %}
+      <ol>
+        {%- for c in h.children %}
+        <li><a href="{{ c.permalink }}">{{ c.title }}</a></li>
+        {%- endfor %}
+      </ol>
+      {%- endif %}
+    </li>
+    {%- endfor %}
+  </ol>
+</nav>
+{%- endif %}
+{%- endcomponent site.toc %}
+
+{# Pages that link here with @/ internal links. #}
+{% component site.backlinks(links: array) -%}
+{%- if links | length > 0 %}
+<section class="backlinks" aria-labelledby="backlinks-heading">
+  <h2 id="backlinks-heading">Linked from</h2>
+  <ul>
+    {%- for b in links %}
+    <li><a href="{{ b.permalink }}">{{ b.title or b.permalink }}</a></li>
+    {%- endfor %}
+  </ul>
+</section>
+{%- endif %}
+{%- endcomponent site.backlinks %}

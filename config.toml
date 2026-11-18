@@ -6,9 +6,8 @@ title = "Alex Sage"
 description = "Notes and writing by Alex Sage."
 default_language = "en"
 
-# Theme lives directly in templates/, sass/, static/. Sass gets turned on
-# when the stylesheet is built (theme stage 2).
-compile_sass = false
+# Theme lives directly in templates/, sass/, static/.
+compile_sass = true
 build_search_index = false
 
 generate_feeds = true

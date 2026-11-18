@@ -2,11 +2,18 @@
 
 {% block title %}Tags · {{ config.title }}{% endblock %}
 
+{% block body_class %}tags{% endblock %}
+
 {% block content %}
-<h1>Tags</h1>
-<ul>
+<header class="section-header">
+  <h1>Tags</h1>
+</header>
+
+<ul class="term-list">
   {% for term in terms %}
-  <li><a href="{{ term.permalink }}">{{ term.name }}</a> ({{ term.page_count }})</li>
+  <li><a href="{{ term.permalink }}">{{ term.name }}</a> <span class="count">{{ term.page_count }}</span></li>
+  {% else %}
+  <li>No tags yet.</li>
   {% endfor %}
 </ul>
 {% endblock %}

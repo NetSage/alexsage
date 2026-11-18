@@ -2,7 +2,11 @@
 
 {% block title %}Not found · {{ config.title }}{% endblock %}
 
+{% block body_class %}not-found{% endblock %}
+
 {% block content %}
 <h1>Page not found</h1>
-<p>That page doesn't exist. Try the <a href="{{ get_url(path="@/blog/_index.md") }}">blog index</a>.</p>
+<p>Nothing lives at this address. Try the <a href="{{ get_url(path="@/_index.md") }}">home page</a>,
+   the <a href="{{ get_url(path="@/blog/_index.md") }}">blog</a>, or the
+   <a href="{{ get_url(path="@/notes/_index.md") }}">notes</a>.</p>
 {% endblock %}

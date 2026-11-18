@@ -3,25 +3,70 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light dark">
   <title>{% block title %}{{ config.title }}{% endblock %}</title>
   {% block meta %}<meta name="description" content="{{ config.description }}">{% endblock %}
+  {% set here = current_path | default(value="") %}
+  {% if current_url | default(value="") %}<link rel="canonical" href="{{ current_url }}">{% endif %}
+  <link rel="stylesheet" href="{{ get_url(path="style.css", cachebust=true) }}">
   <link rel="alternate" type="application/atom+xml" title="{{ config.title }}" href="{{ get_url(path="atom.xml", trailing_slash=false) }}">
+  <script>
+  // Theme toggle. The only JS on the site; everything works without it.
+  // Applies a saved choice before first paint, then adds the button to the nav.
+  (function () {
+    var root = document.documentElement;
+    try {
+      var saved = localStorage.getItem("theme");
+      if (saved === "light" || saved === "dark") root.dataset.theme = saved;
+    } catch (e) {}
+    document.addEventListener("DOMContentLoaded", function () {
+      var nav = document.querySelector(".site-nav");
+      if (!nav) return;
+      var mq = window.matchMedia("(prefers-color-scheme: dark)");
+      var current = function () { return root.dataset.theme || (mq.matches ? "dark" : "light"); };
+      var btn = document.createElement("button");
+      btn.type = "button";
+      btn.className = "theme-toggle";
+      var label = function () {
+        var next = current() === "dark" ? "light" : "dark";
+        btn.textContent = next;
+        btn.setAttribute("aria-label", "Switch to " + next + " theme");
+      };
+      btn.addEventListener("click", function () {
+        var next = current() === "dark" ? "light" : "dark";
+        root.dataset.theme = next;
+        try { localStorage.setItem("theme", next); } catch (e) {}
+        label();
+      });
+      if (mq.addEventListener) mq.addEventListener("change", label);
+      label();
+      nav.appendChild(btn);
+    });
+  })();
+  </script>
 </head>
-<body>
-  <header>
-    <a href="{{ get_url(path="@/_index.md") }}">{{ config.title }}</a>
-    <nav>
-      <a href="{{ get_url(path="@/blog/_index.md") }}">Blog</a>
-      <a href="{{ get_url(path="tags", trailing_slash=true) }}">Tags</a>
-      <a href="{{ get_url(path="atom.xml", trailing_slash=false) }}">Feed</a>
+<body class="{% block body_class %}{% endblock %}">
+  <a class="skip-link" href="#main">Skip to content</a>
+
+  <header class="site-header">
+    <a class="site-title" href="{{ get_url(path="@/_index.md") }}">{{ config.title }}</a>
+    <nav class="site-nav" aria-label="Main">
+      <ul>
+        <li><a href="{{ get_url(path="@/blog/_index.md") }}"{% if here is starting_with(pat="/blog/") %} aria-current="page"{% endif %}>Blog</a></li>
+        <li><a href="{{ get_url(path="@/notes/_index.md") }}"{% if here is starting_with(pat="/notes/") %} aria-current="page"{% endif %}>Notes</a></li>
+        <li><a href="{{ get_url(path="tags", trailing_slash=true) }}"{% if here is starting_with(pat="/tags/") %} aria-current="page"{% endif %}>Tags</a></li>
+      </ul>
     </nav>
   </header>
-  <main>
+
+  <main id="main" class="site-main">
     {% block content %}{% endblock %}
   </main>
-  <footer>
+
+  <footer class="site-footer">
     <p>Content licensed <a href="https://creativecommons.org/licenses/by/4.0/" rel="license">CC BY 4.0</a>.
-       <a href="https://github.com/NetSage/alexsage">Source code</a> MIT.</p>
+       <a href="https://github.com/NetSage/alexsage">Source code</a> MIT.
+       <a href="{{ get_url(path="atom.xml", trailing_slash=false) }}">Atom feed</a>.</p>
   </footer>
 </body>
 </html>

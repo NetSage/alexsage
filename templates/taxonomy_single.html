@@ -2,12 +2,16 @@
 
 {% block title %}Tag: {{ term.name }} · {{ config.title }}{% endblock %}
 
+{% block body_class %}tags{% endblock %}
+
 {% block content %}
-<h1>Tag: {{ term.name }}</h1>
-<ul>
-  {% for p in term.pages %}
-  <li><time datetime="{{ p.date }}">{{ p.date }}</time> <a href="{{ p.permalink }}">{{ p.title }}</a></li>
-  {% endfor %}
+<header class="section-header">
+  <h1>Tagged “{{ term.name }}”</h1>
+</header>
+
+<ul class="entry-list">
+  {% for p in term.pages %}{{<site.entry p={p} note={p.path is starting_with(pat="/notes/")} />}}{% endfor %}
 </ul>
-<p><a href="{{ get_url(path="tags", trailing_slash=true) }}">All tags</a></p>
+
+<p class="more"><a href="{{ get_url(path="tags", trailing_slash=true) }}">All tags</a></p>
 {% endblock %}

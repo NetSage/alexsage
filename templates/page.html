@@ -4,17 +4,34 @@
 
 {% block meta %}<meta name="description" content="{{ page.description or config.description }}">{% endblock %}
 
-{% block content %}
-<article>
-  <h1>{{ page.title }}</h1>
-  {% if page.date %}<p><time datetime="{{ page.date }}">{{ page.date }}</time></p>{% endif %}
-  {{ page.content | safe }}
+{% block body_class %}post{% endblock %}
 
-  {% set tags = page.taxonomies?.tags or [] %}
-  {% if tags %}
-  <p>Tags:
-    {% for t in tags %}<a href="{{ get_taxonomy_url(kind="tags", term=t) }}">{{ t }}</a>{% if not loop.last %}, {% endif %}{% endfor %}
-  </p>
+{% block content %}
+<article class="article">
+  <header class="article-header">
+    <h1>{{ page.title }}</h1>
+    <p class="article-meta">
+      {% if page.date %}{{<site.date value={page.date} />}}{% endif %}
+      {% if page.updated and page.updated != page.date %}· updated {{<site.date value={page.updated} />}}{% endif %}
+      · {{ page.reading_time }} min read
+    </p>
+  </header>
+
+  <aside class="marginalia">
+    {{<site.toc toc={page.toc} />}}
+    {{<site.tags tags={page.taxonomies | get(key="tags", default=[])} />}}
+    {{<site.backlinks links={page.backlinks} />}}
+  </aside>
+
+  <div class="prose">
+    {{ page.content | safe }}
+  </div>
+
+  {% if page.higher or page.lower %}
+  <nav class="pager" aria-label="More posts">
+    {% if page.higher %}<a rel="prev" href="{{ page.higher.permalink }}">Older: {{ page.higher.title }}</a>{% endif %}
+    {% if page.lower %}<a rel="next" href="{{ page.lower.permalink }}">Newer: {{ page.lower.title }}</a>{% endif %}
+  </nav>
   {% endif %}
 </article>
 {% endblock %}
