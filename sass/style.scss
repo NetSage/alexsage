@@ -422,10 +422,63 @@ figcaption { font-family: $sans; font-size: 0.85rem; color: var(--muted); margin
   }
 }
 
+// ---------- Code highlighting (Giallo) ----------
+// Colours come inline from the themes in config.toml; these are the layout
+// rules Zola's docs say to add, plus hl_lines and line numbers.
+
+pre.giallo { border-color: var(--border); }
+.giallo-l {
+  display: inline-block;
+  min-height: 1lh;
+  width: 100%;
+}
+.giallo-ln {
+  display: inline-block;
+  user-select: none;
+  margin-right: 0.4em;
+  padding: 0 0.4em;
+  min-width: 3ch;
+  text-align: right;
+  opacity: 0.8;
+}
+pre mark {
+  display: block;
+  color: inherit;
+  background: rgba(127, 127, 127, 0.18);
+}
+pre > code[data-name]::before {
+  content: attr(data-name);
+  display: block;
+  margin-bottom: 0.5em;
+  font-size: 0.85em;
+  opacity: 0.8;
+}
+
+// ---------- Figures ----------
+
+.figure {
+  margin: 1.75em 0;
+  img { display: block; margin: 0 auto; }
+}
+
+// ---------- Heading anchors ----------
+
+.heading-anchor {
+  font-family: $sans;
+  font-size: 0.7em;
+  margin-left: 0.4em;
+  color: var(--muted);
+  text-decoration: none;
+  opacity: 0;
+}
+:is(h2, h3, h4):hover > .heading-anchor,
+.heading-anchor:focus-visible { opacity: 1; }
+@media (hover: none) { .heading-anchor { opacity: 0.6; } }
+
 // ---------- Print ----------
 
 @media print {
   :root, :root[data-theme] { @include light; --bg: #fff; --bg-alt: #fff; }
-  .site-nav, .skip-link, .theme-toggle, .marginalia .toc, .pager { display: none; }
+  .site-nav, .skip-link, .theme-toggle, .marginalia .toc, .pager, .heading-anchor { display: none; }
   a { color: inherit; }
 }

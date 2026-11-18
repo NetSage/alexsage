@@ -10,6 +10,10 @@ default_language = "en"
 compile_sass = true
 build_search_index = false
 
+# Original images in content/ are NOT published. Posts show them through the
+# site.img component, which publishes a resized WebP copy instead.
+ignored_content = ["*.{jpg,jpeg,png,JPG,JPEG,PNG}"]
+
 generate_feeds = true
 feed_filenames = ["atom.xml"]
 
@@ -20,5 +24,11 @@ taxonomies = [
 [markdown]
 smart_punctuation = true
 external_links_no_follow = false
+
+[markdown.highlighting]
+# Inline light-dark() colours follow the site's color-scheme, so the theme
+# toggle switches code colours too. Picked for contrast (WCAG AA).
+light_theme = "light-plus"
+dark_theme = "catppuccin-mocha"
 
 [extra]

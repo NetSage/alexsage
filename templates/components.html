@@ -59,6 +59,22 @@
 {%- endif %}
 {%- endcomponent site.toc %}
 
+{#
+Image from a post's own folder, published as a resized WebP (originals aren't
+published; see ignored_content in config.toml). In Markdown, on its own line,
+wrap this in double curly braces:  <site.img src="photo.jpg" alt="What it shows" />
+Optional: caption="...", width={1200}. Never upscales. alt="" for decorative images.
+#}
+{% component site.img(src: string, alt: string, caption: string = "", width: integer = 800, @page) -%}
+{%- set img = resize_image(path=(page.colocated_path or "") ~ src, width=width, height=width * 4, op="fit", format="webp", quality=80) -%}
+<figure class="figure">
+  <img src="{{ img.url }}" width="{{ img.width }}" height="{{ img.height }}" alt="{{ alt }}" loading="lazy" decoding="async">
+  {%- if caption %}
+  <figcaption>{{ caption }}</figcaption>
+  {%- endif %}
+</figure>
+{%- endcomponent site.img %}
+
 {# Pages that link here with @/ internal links. #}
 {% component site.backlinks(links: array) -%}
 {%- if links | length > 0 %}
