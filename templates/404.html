@@ -5,6 +5,7 @@
 {% block body_class %}not-found{% endblock %}
 
 {% block content %}
+{{<site.logo cls={"logo logo-large"} uid={"x"} />}}
 <h1>Page not found</h1>
 <p>Nothing lives at this address. Try the <a href="{{ get_url(path="@/_index.md") }}">home page</a>,
    the <a href="{{ get_url(path="@/blog/_index.md") }}">blog</a>, or the
